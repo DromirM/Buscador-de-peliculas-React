@@ -1,0 +1,37 @@
+  .moviesContainer {
+    margin-top: 20px;
+    text-align: left;
+    display: grid;
+    width: fit-content;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  
+  .movie {
+    height: fit-content;
+    margin-bottom: 10px;
+    padding: 10px;
+    background-color: #1d2439;
+    border-radius: 5px;
+    min-height: 150px;
+    color: antiquewhite;
+  }
+  
+  .movie img {
+    width: 30%;
+    float: left;
+    margin-right: 10px;
+    height: 100%;
+  }
+  
+  .movie h2 {
+    font-size: 18px;
+    margin-top: 0;
+    font-weight: bold;
+  }
+  
+  .movie p {
+    margin: 5px 0;
+    text-align: justify;
+  }
+  
