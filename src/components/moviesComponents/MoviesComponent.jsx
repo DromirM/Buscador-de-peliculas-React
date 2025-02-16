@@ -1,17 +1,25 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import '../styles/MoviesComponentStyle.css';
+import Rating from '@mui/material/Rating';
+import StarIcon from '@mui/icons-material/Star';
+//import Stack from '@mui/material/Stack';
+import { Box } from "@mui/material";
+import { BackgroundImageContext } from "../../context/BackgroundImageContext";
+import '../../styles/MoviesComponentStyle.css';
 
 export const MoviesComponent = ({moviesData}) => {
   if (!moviesData?.results) return null;
   
   const [movies, setMovies] = useState([]);
+  const {setPath} = useContext(BackgroundImageContext);
 
   useEffect(() => {
     if(moviesData?.results.length > 0){
       setMovies(moviesData.results);
+      setPath(`url(https://image.tmdb.org/t/p/original/${moviesData.results[0].backdrop_path})`);
     } else{
       setMovies([]);//Si no se encontraron peliculas, limpio la variable de estado.
+      setPath('url("")');
     }
   }, [moviesData]);
   
@@ -35,6 +43,23 @@ export const MoviesComponent = ({moviesData}) => {
                 />
                 <h2 className="movie-title">{movie.title}</h2>
                 <p className="movie-date"><strong>Fecha de estreno:</strong> {movie.release_date}</p>
+                <label className="ratingLabel">
+                  <strong>Puntaje:</strong> 
+                  <div className="ratingContainerStyles">
+                    <Rating 
+                      name="half-rating-read" 
+                      className="rating-component"
+                      defaultValue={movie.vote_average} 
+                      precision={0.1} 
+                      max={10} 
+                      readOnly 
+                      icon={<StarIcon style={{ opacity: 1}} fontSize="inherit" />}
+                      emptyIcon={<StarIcon style={{ opacity: 1}} fontSize="inherit" />}
+                    />
+                  </div>
+                  <Box sx={{ ml: '2%'}} >{Number.parseFloat(movie.vote_average).toFixed(1)}</Box>
+                </label>
+
                 <p className="movie-description"><strong>Sinopsis:</strong> {movie.overview}</p>
               </motion.div>
             );

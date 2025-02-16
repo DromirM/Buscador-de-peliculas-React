@@ -1,9 +1,10 @@
 import { useForm } from './hooks/useForm';
 import { useFetch } from './hooks/useFetch';
 import { useRef, useState, useEffect, useContext } from 'react';
-import { MoviesComponent } from './components/MoviesComponent';
+import { MoviesComponent } from './components/moviesComponents/MoviesComponent';
 import { ToastComponent } from './components/toast/ToastComponent';
 import { ToastContext } from './context/ToastContext';
+import { BackgroundImageContext } from './context/BackgroundImageContext';
 
 export const BuscadorPeliculas = () => {
   
@@ -20,6 +21,7 @@ export const BuscadorPeliculas = () => {
   const inputRef = useRef('');
   const {data, isLoading, error} = useFetch(url);
   const {showToast, setShowToast} = useContext(ToastContext);
+  const {path, setPath} = useContext(BackgroundImageContext);
   
   const handleOnSubmit = (e) =>{
     e.preventDefault();
@@ -41,9 +43,9 @@ export const BuscadorPeliculas = () => {
   
   return (
     <>
+      <div className='background-image' style={{backgroundImage: `${path}`} } />
       <div className="mainMoviesContainer">
         <h1 className="title">Buscador de peliculas</h1>
-
         <form onSubmit={handleOnSubmit}>
           <input
             type="text"
@@ -55,7 +57,9 @@ export const BuscadorPeliculas = () => {
           />
           <button type="submit">Buscar</button>
         </form>
-
+        
+        {isLoading && <p>Cargando...</p>}
+        {error && <p>Se ha producido un al obtener los datos.</p>}
         {data?.results && <MoviesComponent moviesData={data} />}
       </div>
       {showToast && <ToastComponent message='No se hallaron peliculas con ese nombre.' />}
