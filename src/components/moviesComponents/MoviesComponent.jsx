@@ -1,13 +1,13 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, memo } from "react";
 import { motion } from "framer-motion";
 import Rating from '@mui/material/Rating';
 import StarIcon from '@mui/icons-material/Star';
-//import Stack from '@mui/material/Stack';
 import { Box } from "@mui/material";
 import { BackgroundImageContext } from "../../context/BackgroundImageContext";
+import { getBackgroundUrl } from "./backgroundPath";
 import '../../styles/MoviesComponentStyle.css';
 
-export const MoviesComponent = ({moviesData}) => {
+export const MoviesComponent = memo(({moviesData}) => {
   if (!moviesData?.results) return null;
   
   const [movies, setMovies] = useState([]);
@@ -16,10 +16,10 @@ export const MoviesComponent = ({moviesData}) => {
   useEffect(() => {
     if(moviesData?.results.length > 0){
       setMovies(moviesData.results);
-      setPath(`url(https://image.tmdb.org/t/p/original/${moviesData.results[0].backdrop_path})`);
+      setPath(`https://image.tmdb.org/t/p/original/${getBackgroundUrl(moviesData.results)}`);
     } else{
-      setMovies([]);//Si no se encontraron peliculas, limpio la variable de estado.
-      setPath('url("")');
+      setMovies([]);//Si no se encontraron peliculas, limpio la variable/array de estado.
+      setPath('/assets/images/defaultBackground.jpg');
     }
   }, [moviesData]);
   
@@ -59,7 +59,6 @@ export const MoviesComponent = ({moviesData}) => {
                   </div>
                   <Box sx={{ ml: '2%'}} >{Number.parseFloat(movie.vote_average).toFixed(1)}</Box>
                 </label>
-
                 <p className="movie-description"><strong>Sinopsis:</strong> {movie.overview}</p>
               </motion.div>
             );
@@ -68,4 +67,4 @@ export const MoviesComponent = ({moviesData}) => {
       </div>
     </>
   );
-};
+});

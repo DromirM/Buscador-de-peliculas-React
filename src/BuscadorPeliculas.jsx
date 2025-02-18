@@ -5,9 +5,9 @@ import { MoviesComponent } from './components/moviesComponents/MoviesComponent';
 import { ToastComponent } from './components/toast/ToastComponent';
 import { ToastContext } from './context/ToastContext';
 import { BackgroundImageContext } from './context/BackgroundImageContext';
+import { motion } from "framer-motion";
 
 export const BuscadorPeliculas = () => {
-  
   //La clave aqui debe coincidir con el/los nombre/s del/los input.
   const initialForm = {
     inputSearch: ''
@@ -16,7 +16,7 @@ export const BuscadorPeliculas = () => {
   const api_key = import.meta.env.VITE_API_KEY;
   const urlBase = import.meta.env.VITE_BASE_URL;
 
-  const {inputSearch, formState, onInputChange, cleanInputs} = useForm(initialForm);
+  const {inputSearch, onInputChange, cleanInputs} = useForm(initialForm);
   const [url, setUrl] = useState('');
   const inputRef = useRef('');
   const {data, isLoading, error} = useFetch(url);
@@ -35,15 +35,18 @@ export const BuscadorPeliculas = () => {
 
   useEffect(() => {
     if(data?.results.length === 0){
-      setShowToast(true); //Se muestra Toast si no se encontraron resultados.
-    } else {
-      setShowToast(false); //Se oculta Toast si se encontraron resultados.
+      setShowToast(true); //Se muestra el Toast si no se encontraron resultados.
+      setPath('/assets/images/defaultBackground.jpg'); //Restablesco el fondo de pantalla por defecto.
+    } else if(showToast === true) {
+      setShowToast(false); //Se oculta el Toast si se encontraron resultados.
     }
   }, [data])
   
   return (
     <>
-      <div className='background-image' style={{backgroundImage: `${path}`} } />
+      <motion.div initial={{opacity: 0}}  animate={{opacity: 1}}  transition={{duration: 1}} >
+        <div className='background-image' style={{backgroundImage: `url(${path})`} } />
+      </motion.div>
       <div className="mainMoviesContainer">
         <h1 className="title">Buscador de peliculas</h1>
         <form onSubmit={handleOnSubmit}>
@@ -60,9 +63,13 @@ export const BuscadorPeliculas = () => {
         
         {isLoading && <p>Cargando...</p>}
         {error && <p>Se ha producido un al obtener los datos.</p>}
-        {data?.results && <MoviesComponent moviesData={data} />}
+        {data?.results.length
+          ? 
+          <MoviesComponent moviesData={data} /> 
+          : 
+          showToast && <ToastComponent message='No se hallaron peliculas con ese nombre.' />
+        }
       </div>
-      {showToast && <ToastComponent message='No se hallaron peliculas con ese nombre.' />}
     </>
-  )
-}
+  );
+};

@@ -1,6 +1,11 @@
 
-const getBackgroundUrl = () => {
+export const getBackgroundUrl = (movies) => {
   //Funcion que dado el array de peliculas, retorna un fondo valido.
-
-  //NOTA: Usar un forEach por cada elemento de movies y apenas se encuentre uno valido, salir usando un break.
+  for (let i = 0; i < movies.length; i++) {
+    if(movies[i].backdrop_path){
+      return movies[i].backdrop_path;
+    }
+  }
+  
+  return null;
 }
